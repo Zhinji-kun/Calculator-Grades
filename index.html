@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Calculator | Tamondong</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container-lg">
+        <h1>Grade Calculator</h1>
+
+        <label for="prelim">Enter Prelim Grade:</label>
+        <input type="number" id="prelim" step="any" autocomplete="off"/><br /><br />
+
+        <button id="calculate-btn">Calculate Required Grades</button>
+
+        <p id="result"></p>
+        <p id="deans-list-status"></p>
+
+        <footer>
+            <p>Rai Zhinji G. Tamondong</p>
+        </footer>
+    </div>
+
+    <script src="https://pyscript.net/latest/pyscript.js"></script>
+
+      <py-script>
+        from pyscript import Element
+
+        def calculate_grades(*args):
+            prelim_grade = float(Element("prelim").element.value)
+            result_element = Element("result")
+            deans_list_element = Element("deans-list-status")
+            result_element.clear()
+            deans_list_element.clear()
+
+            if prelim_grade < 0 or prelim_grade > 100:
+                result_element.write("Prelim grade must be between 0 and 100.")
+            else:
+                # Calculate the required midterm and final grades
+                passing_grade = 75
+                dean_lister_threshold = 90
+                prelim_contribution = 0.2 * prelim_grade
+                remaining_grade_needed = passing_grade - prelim_contribution
+
+                if remaining_grade_needed > 80:
+                    result_element.write("Unfortunately, it's impossible to pass the subject with the current Prelim grade.")
+                else:
+                    required_midterm = remaining_grade_needed * (0.3 / (0.3 + 0.5))
+                    required_final = remaining_grade_needed * (0.5 / (0.3 + 0.5))
+
+                    result_element.write(f"You need at least {required_midterm:.2f} in Midterm and {required_final:.2f} in Finals to pass.")
+
+                    prelim_contribution_full = prelim_grade * 0.2
+                    midterm_contribution_full = required_midterm * 0.3
+                    final_contribution_full = required_final * 0.5
+                    final_grade = prelim_contribution_full + midterm_contribution_full + final_contribution_full
+
+                    if final_grade >= dean_lister_threshold:
+                        deans_list_element.write(f"Congratulations! You can qualify for the Dean's List with a final grade of {final_grade:.2f}.")
+                    else:
+                        deans_list_element.write(f"To qualify for the Dean's List, your final grade should be above 90. Currently projected: {final_grade:.2f}.")
+
+        Element("calculate-btn").element.onclick = calculate_grades
+      </py-script>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
+</html>
